@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="./mythology.css">
+    </head>
+    <body class="GalleryBody">
+        <div class="DisplayA"></div>
+        <div class="DisplayB"></div>
+        <a href="./mainPage.html"><img class="ReturnToMain" src="https://www.pngall.com/wp-content/uploads/3/Portal-PNG-Pic.png"></a>
+        <div class="DisplayCont">
+            <div class="Display FoodDisplay" id="FoodDisplay"></div>
+            <div class="Display CoinsDisplay" id="CoinsDisplay"></div>
+            <div class="Display ShardsDisplay" id="ShardsDisplay"></div>
+            <select name="Creatures" class="CreatureSelect" id="dropdown">
+                <option value="Ogre">Ogre</option>
+                <option value="Goblin">Goblin</option>
+                <option value="Faerie">Faerie</option>
+                <option value="Troll">Troll</option>
+                <option value="Gorgon">Gorgon</option>
+                <option value="Golem">Golem</option>
+                <option value="Pixie">Pixie</option>
+                <option value="Griffin">Griffin</option>
+                <option value="Sylph">Sylph</option>
+                <option value="Siren">Siren</option>
+                <option value="Cyclops">Cyclops</option>
+                <option value="Giant">Giant</option>
+                <option value="Werewolf">Werewolf</option>
+                <option value="Yeti">Yeti</option>
+                <option value="Minotaur">Minotaur</option>
+                <option value="Cerberus">Cerberus</option>
+                <option value="Wyvern">Wyvern</option>
+                <option value="Pegasus">Pegasus</option>
+                <option value="Nessie">Nessie</option>
+                <option value="Basilisk">Basilisk</option>
+                <option value="Chimera">Chimera</option>
+                <option value="Banshee">Banshee</option>
+                <option value="Djinn">Djinn</option>
+                <option value="Medusa">Medusa</option>
+                <option value="Scylla">Scylla</option>
+                <option value="Manticore">Manticore</option>
+                <option value="Phoenix">Phoenix</option>
+                <option value="Kraken">Kraken</option>
+                <option value="Charibdys">Charibdys</option>
+                <option value="Kaiju">Kaiju</option>
+                <option value="Dybukk">Dybukk</option>
+                <option value="Fenrir">Fenrir</option>
+                <option value="Oni">Oni</option>
+                <option value="Valkyrie">Valkyrie</option>
+                <option value="Dragon">Dragon</option>
+                <option value="Raiju">Raiju</option>
+                <option value="Hydra">Hydra</option>
+                <option value="Cthulhu">Cthulhu</option>
+                <option value="Jormungandr">Jörmungandr</option>
+            </select>
+        </div>
+        <div class="CreatureDisplay">
+            <div class="levelDisplay"><p id="LevelDisplay"></p></div>
+            <img class="CreaturePhoto" id="Photo" src="">
+            <p class="CreatureDesc" id="Description"></p>
+        </div> 
+        <div class="CreatureStats">
+            <h2 class="StatsTitle" id="StatsTitle"></h2>
+            <p class="Stats" id="LevelStat"></p>
+            <p class="Stats" id="AttackStat"></p>
+            <p class="Stats" id="DefenseStat"></p>
+            <p class="Stats" id="SpeedStat"></p>
+            <p class="Stats" id="DangerStat"></p>
+            <p class="Stats" id="RarityStat"></p>
+            <p class="Stats" id="SpeciesStat"></p>
+            <p class="Stats" id="EvolutionStageStat"></p>
+        </div>
+        <button class="LevelUp" id="CFB"><p id="FeedButton">Level Up</p></button>
+        <button class="Evolve" id="CEB"><p id="EvolveButton">Evolve</p></button>
+        <h3 class="rarityDisplay" id="RarityDisplay"></h3>
+        <div class="ErrorText" id="ErrorText"></div>
+        <img class="CloseButton" id="errorClose" src="https://www.freeiconspng.com/uploads/close-icon-16.png">
+        <script src="./mythology.js"></script>
+        <script>
+            const creatureStatsTitle = document.getElementById("StatsTitle");
+            const creatureStatsLevel = document.getElementById("LevelStat");
+            const creatureStatsAttack = document.getElementById("AttackStat");
+            const creatureStatsDefense = document.getElementById("DefenseStat");
+            const creatureStatsSpeed = document.getElementById("SpeedStat");
+            const creatureStatsDanger = document.getElementById("DangerStat");
+            const creatureStatsRarity = document.getElementById("RarityStat");
+            const creatureStatsSpecies = document.getElementById("SpeciesStat");
+            const creatureStatsEvolutionStage = document.getElementById("EvolutionStageStat");
+            
+            const creatureDesc = document.getElementById("Description");
+            const creaturePhoto = document.getElementById("Photo");
+            const creatureDisplayLevel = document.getElementById("LevelDisplay");
+            const creatureDisplayRarity = document.getElementById("RarityDisplay");
+            
+            const creatureFeedButton = document.getElementById("FeedButton");
+            const creatureEvolveButton = document.getElementById("EvolveButton");
+            const CEBDiv = document.getElementById("CEB");
+            const CFBDiv = document.getElementById("CFB");
+            
+            const dropdown = document.getElementById("dropdown");
+            const displayFood = document.getElementById("FoodDisplay");
+            const displayCoins = document.getElementById("CoinsDisplay");
+            const displayShards = document.getElementById("ShardsDisplay");
+            
+            const errorText = document.getElementById("ErrorText");
+            const errorClose = document.getElementById("errorClose");
+
+            let owned = false;
+            let errorMsg = "";
+            let rarityBonus = 0;
+            let viewedCreature = "";
+
+            function CFBadder() {
+                feed();
+                if (errorMsg != "") {
+                    errorText.innerHTML = errorMsg;
+                    errorText.classList.add("ErrorTextAnimation");
+                    errorClose.classList.add("ErrorTextAnimation");
+                    errorClose.addEventListener("click", ErrorCloser);
+                } else {
+                    creatureDisplayLevel.innerHTML = viewedCreature.level;
+                    creatureStatsLevel.innerHTML = `Level: ${viewedCreature.level}`;
+                    creatureStatsAttack.innerHTML = `Attack: ${viewedCreature.attack}`;
+                    creatureStatsDefense.innerHTML = `Defense: ${viewedCreature.defense}`;
+                    creatureStatsSpeed.innerHTML = `Speed: ${viewedCreature.speed}`;
+                    displayFood.innerHTML = `Food: ${userFood}`;
+                 }
+            }
+
+            function CEBadder() {
+                evolve();
+                if (errorMsg != "") {
+                    errorText.innerHTML = errorMsg;
+                    errorText.classList.add("ErrorTextAnimation"); 
+                    errorClose.classList.add("ErrorTextAnimation"); 
+                    errorClose.addEventListener("click", ErrorCloser);
+                } else {
+                    creatureDisplayLevel.innerHTML = viewedCreature.level;
+                    creatureStatsLevel.innerHTML = `Level: ${viewedCreature.level}`;
+                    creatureStatsAttack.innerHTML = `Attack: ${viewedCreature.attack}`;
+                    creatureStatsDefense.innerHTML = `Defense: ${viewedCreature.defense}`;
+                    creatureStatsSpeed.innerHTML = `Speed: ${viewedCreature.speed}`;
+                    creatureStatsEvolutionStage.innerHTML = `Evolution Stage: ${viewedCreature.evolutionStage}`;
+                    displayShards.innerHTML = `Shards: ${viewedCreature.shards}`;
+                }
+            }
+                
+            function ErrorCloser() {
+                    errorText.classList.remove("ErrorTextAnimation");
+                    errorClose.classList.remove("ErrorTextAnimation");
+                    errorText.innerHTML = "";
+                    errorMsg = "";
+                    errorClose.removeEventListener("click", ErrorCloser);
+                }
+
+            function evolveUp(shardsCost) {
+                if (viewedCreature.shards >= shardsCost) {
+                    viewedCreature.level++;
+                    viewedCreature.shards -= shardsCost;
+                    creatureStatsLevel.innerHTML = `Level: ${viewedCreature.level}`;
+                    creatureStatsEvolutionStage.innerHTML = `Evolution Stage: ${viewedCreature.evolutionStage}`;
+                    creatureDisplayLevel.innerHTML = viewedCreature.level;
+                    displayShards.innerHTML = `Shards: ${viewedCreature.shards}`;
+                    localStorageSetter(viewedCreature);
+                } else {
+                    errorMsg = `Not enough shards to evolve creature. (${viewedCreature.shards}/${shardsCost})`;
+                }
+            }
+
+            function evolve() {
+                erorrMsg = "";
+                if (viewedCreature.level != 10 && viewedCreature.level != 20 && viewedCreature.level != 30) {
+                    errorMsg = "May not evolve creature at this time.";
+                } else if (viewedCreature.level == 10) {
+                    viewedCreature.evolutionStage = "Adolescent";
+                    evolveUp(50);
+                } else if (viewedCreature.level == 20) {
+                    viewedCreature.evolutionStage = "Young Adult";
+                    evolveUp(100);
+                } else {
+                    viewedCreature.evolutionStage = "Adult";
+                    evolveUp(200);
+                }
+            }
+
+            function levelUp(foodCost) {
+                if (userFood >= foodCost) {
+                    userFood -= foodCost;
+                    viewedCreature.levelSelf();
+                    localStorageSetter(viewedCreature);
+                } else {
+                    errorMsg = `You do not have enough food. Cannot level up creature. (${userFood}/${foodCost})`;
+                }
+            }
+
+            function feed() {
+                errorMsg = "";
+                if (viewedCreature.level == 10 || viewedCreature.level == 20 || viewedCreature.level == 30) {
+                    errorMsg = "Creature is at max level. Evolve to feed higher.";
+                } else if (viewedCreature.level == 40) {
+                    errorMsg = "Creature is at max level.";
+                } else if (viewedCreature.level < 10) {
+                    switch (viewedCreature.rarity) {
+                        case "common":
+                            levelUp(2285);
+                            break;
+                        case "rare":
+                            levelUp(5315);
+                            break;
+                        case "epic":
+                            levelUp(11340);
+                            break;
+                        case "mythical":
+                            levelUp(19170);
+                            break;
+                    }
+                } else if (viewedCreature.level < 20) {
+                    switch (viewedCreature.rarity) {
+                        case "common":
+                            levelUp(3285);
+                            break;
+                        case "rare":
+                            levelUp(8315);
+                            break;
+                        case "epic":
+                            levelUp(17340);
+                            break;
+                        case "mythical":
+                            levelUp(26170);
+                            break;
+                    }
+                } else if (viewedCreature.level < 30) {
+                    switch (viewedCreature.rarity) {
+                        case "common":
+                            levelUp(5285);
+                            break;
+                        case "rare":
+                            levelUp(12315);
+                            break;
+                        case "epic":
+                            levelUp(22340);
+                            break;
+                        case "mythical":
+                            levelUp(35170);
+                            break;
+                    }
+                } else if (viewedCreature.level < 40) {
+                    switch (viewedCreature.rarity) {
+                        case "common":
+                            levelUp(8285);
+                            break;
+                        case "rare":
+                            levelUp(16315);
+                            break;
+                        case "epic":
+                            levelUp(28340);
+                            break;
+                        case "mythical":
+                            levelUp(50170);
+                            break;
+                    }
+                } 
+            }
+
+            function changeGallery(creature) {
+                displayFood.innerHTML = `Food: ${userFood}`;
+                displayCoins.innerHTML = `Coins: ${userCoins}`;
+                if (owned == true) {
+                    viewedCreature = creature;
+                    CFBDiv.style.background = "linear-gradient(50deg, white, red)";
+                    CEBDiv.style.background = "linear-gradient(50deg, white, green)";
+                    creatureDisplayLevel.innerHTML = creature.level;
+                    creatureDisplayRarity.innerHTML = creature.rarity;
+                    creatureStatsTitle.innerHTML = creature.name;
+                    creatureStatsLevel.innerHTML = `Level: ${creature.level}`;
+                    creatureStatsAttack.innerHTML = `Attack: ${creature.attack}`;
+                    creatureStatsDefense.innerHTML = `Defense: ${creature.defense}`;
+                    creatureStatsSpeed.innerHTML = `Speed: ${creature.speed}`;
+                    creatureStatsDanger.innerHTML = `Danger: ${creature.dangerLevel}`;
+                    creatureStatsRarity.innerHTML = `Rarity: ${creature.rarity}`;
+                    creatureStatsSpecies.innerHTML = `Species: ${creature.species}`;
+                    creatureStatsEvolutionStage.innerHTML = `Evolution Stage: ${creature.evolutionStage}`;
+                    creatureDesc.innerHTML = creature.desc;
+                    displayShards.innerHTML = `Shards: ${creature.shards}`;
+                    creaturePhoto.src = creature.imageurl;
+                    creatureFeedButton.addEventListener("click", CFBadder);
+                    creatureEvolveButton.addEventListener("click", CEBadder);
+                } else {
+                    CFBDiv.style.background = "linear-gradient(50deg, white, black)";
+                    CEBDiv.style.background = "linear-gradient(50deg, white, black)";
+                    creatureDisplayLevel.innerHTML = "?";
+                    creatureDisplayRarity.innerHTML = "??????";
+                    creatureStatsTitle.innerHTML = "????";
+                    creatureStatsLevel.innerHTML = `Level: ?`;
+                    creatureStatsAttack.innerHTML = `Attack: ?`;
+                    creatureStatsDefense.innerHTML = `Defense: ?`;
+                    creatureStatsSpeed.innerHTML = `Speed: ?`;
+                    creatureStatsDanger.innerHTML = `Danger: ?`;
+                    creatureStatsRarity.innerHTML = `Rarity: ?`;
+                    creatureStatsSpecies.innerHTML = `Species: ?`;
+                    creatureStatsEvolutionStage.innerHTML = `Evolution Stage: ?`;
+                    creatureDesc.innerHTML = "??????????";
+                    displayShards.innerHTML = `Shards: ?`;
+                    creaturePhoto.src = "https://i.quotev.com/img/q/u/13/06/08/question_mark.jpg";
+                    creatureFeedButton.removeEventListener("click", CFBadder);
+                    creatureEvolveButton.removeEventListener("click", CEBadder);
+                }
+            }
+
+            function localStorageSetter(creature) {
+                localStorage.setItem(`${creature.name}U`, JSON.stringify(creature));
+            }
+
+            function localStorageGetter(creature) {
+               const creatureTemp = JSON.parse(localStorage.getItem(`${creature.name}U`));
+               return creatureTemp;
+            }
+
+            dropdown.addEventListener("change", function() {
+                owned = false;
+                for (creature of myCreatures) {
+                    if (creature.name == this.value) {
+                        owned = true;
+                        changeGallery(creature);
+                    }
+                }
+                if (owned == false) {
+                    changeGallery("RETURNFALSEVALUE");
+                }
+            });
+
+            window.addEventListener("load", function() {
+                for (creature of myCreatures) {
+                    switch (creature.name) {
+                        case "Ogre":
+                            const ogreU1 = localStorageGetter(ogreU);
+                            ogreU = ogreU1;
+                    }
+                }
+                owned = false;
+                for (creature of myCreatures) {
+                    if (creature.name == "Ogre") {
+                        owned = true;
+                        changeGallery(creature);
+                    }
+                }
+                if (owned == false) {
+                    changeGallery("FALSE");
+                }
+            });
+        </script>
+    </body>
+</html>
+
+<!--
+    make class and country system
+    make changes to the picture display including class and country pictures
+    make the new improved creature gallery 
+    4. learn how to save game data when leaving the page.
+-->
